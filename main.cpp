@@ -77,14 +77,14 @@ int tick(
         for (const auto &note: notes) {
             if (instruments.find(note.first) == instruments.end()) {
                 instruments.insert({note.first, {
-                    flags[Flag::inst_flute] ? new stk::Flute(27.5)
-                        : flags[Flag::inst_clarinet] ? new stk::Clarinet(27.5)
-                        : flags[Flag::inst_saxofony] ? new stk::Saxofony(27.5)
-                        : flags[Flag::inst_bowed] ? new stk::Bowed(27.5)
-                        : flags[Flag::inst_plucked] ? new stk::Plucked(27.5)
-                        : flags[Flag::inst_mandolin] ? new stk::Mandolin(27.5)
-                        : flags[Flag::inst_rhodey] ? new stk::Rhodey(27.5)
-                        : new stk::Flute(27.5)
+                    flags[Flag::inst_flute] ? (stk::Instrmnt *) new stk::Flute(30)
+                        : flags[Flag::inst_clarinet] ? (stk::Instrmnt *) new stk::Clarinet(30)
+                        : flags[Flag::inst_saxofony] ? (stk::Instrmnt *) new stk::Saxofony(30)
+                        : flags[Flag::inst_bowed] ? (stk::Instrmnt *) new stk::Bowed(30)
+                        : flags[Flag::inst_plucked] ? (stk::Instrmnt *) new stk::Plucked(30)
+                        : flags[Flag::inst_mandolin] ? (stk::Instrmnt *) new stk::Mandolin(30)
+                        : flags[Flag::inst_rhodey] ? (stk::Instrmnt *) new stk::Rhodey()
+                        : (stk::Instrmnt *) new stk::Flute(30)
                 }});
 
                 instruments.at(note.first)->noteOn(

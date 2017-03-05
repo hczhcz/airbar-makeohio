@@ -10,32 +10,33 @@
 // 0 <= volume <= 1
 // -1 <= vibe <= 1
 
-enum class Flag {
-    inst_flute, // default
-    inst_clarinet,
-    inst_saxofony,
-    inst_bowed,
-    inst_plucked,
-    inst_mandolin,
-    inst_rhodey,
-    pitch_1_2,
-    pitch_2_3,
-    pitch_3_4, // default
-    pitch_4_5,
-    pitch_5_6,
-    pitch_6_7,
-    pitch_round,
-    pitch_fixed,
-    pitch_draggable,
-    pitch_smooth,
-    volume_smooth,
-    volume_delay,
-    vibe_smooth,
-    vibe_delay,
-    fx_over,
-    fx_dist,
-    fx_reverb,
-    fx_echo
+namespace Flag {
+    enum {
+        inst_flute, // default
+        inst_clarinet,
+        inst_saxofony,
+        inst_bowed,
+        inst_plucked,
+        inst_mandolin,
+        inst_rhodey,
+        pitch_1_2,
+        pitch_2_3,
+        pitch_3_4, // default
+        pitch_4_5,
+        pitch_5_6,
+        pitch_6_7,
+        pitch_round,
+        pitch_fixed,
+        note_smooth,
+        note_delay,
+        vibe_enable,
+        vibe_smooth,
+        vibe_delay,
+        fx_over,
+        fx_dist,
+        fx_reverb,
+        fx_echo
+    };
 };
 
 struct Note {
@@ -43,7 +44,7 @@ struct Note {
     double volume;
 };
 
-bool flags[256];
+extern bool flags[256];
 
 void fetch_flag();
 std::map<uint64_t, Note> &fetch_notes();
