@@ -28,7 +28,7 @@ struct __attribute__((__packed__)) AirBarData {
 };
 
 int get_device() {
-    fprintf(stderr, "Getting device\n");
+    // fprintf(stderr, "Getting device\n");
 
     for (size_t i = 0; i < DEV_SEARCH_MAX; ++i) {
         char buffer[256];

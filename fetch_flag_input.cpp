@@ -6,11 +6,12 @@
 bool flags[256];
 
 int get_input() {
-    if (fcntl(0, F_SETFL, fcntl(0, F_GETFL) | O_NONBLOCK) != -1) {
-        return 0;
-    } else {
-        return -1;
-    }
+    return open("input", O_RDONLY | O_NONBLOCK);
+    // if (fcntl(0, F_SETFL, fcntl(0, F_GETFL) | O_NONBLOCK) != -1) {
+    //     return 0;
+    // } else {
+    //     return -1;
+    // }
 }
 
 void fetch_flag() {
@@ -24,6 +25,7 @@ void fetch_flag() {
         char c;
 
         while (read(input, &c, 1) == 1) {
+            fprintf(stderr, "!!![%c]\n", c);
             switch (c) {
                 case '1':
                 case '2':

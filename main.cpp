@@ -18,6 +18,8 @@ int tick(
 ) {
     static std::map<uint64_t, stk::Instrmnt *> instruments;
 
+    fetch_flag();
+
     double offset = flags[Flag::pitch_1_2] ? -45
         : flags[Flag::pitch_2_3] ? -33
         : flags[Flag::pitch_3_4] ? -21
