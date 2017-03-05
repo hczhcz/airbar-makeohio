@@ -11,7 +11,7 @@
 // -1 <= vibe <= 1
 
 enum class Flag {
-    inst_flute,
+    inst_flute, // default
     inst_clarinet,
     inst_saxofony,
     inst_bowed,
@@ -20,7 +20,7 @@ enum class Flag {
     inst_rhodey,
     pitch_1_2,
     pitch_2_3,
-    pitch_3_4,
+    pitch_3_4, // default
     pitch_4_5,
     pitch_5_6,
     pitch_6_7,

@@ -18,8 +18,6 @@ int tick(
 ) {
     static std::map<uint64_t, stk::Instrmnt *> instruments;
 
-    stk::StkFloat *samples = (stk::StkFloat *) buffer;
-
     double offset = flags[Flag::pitch_1_2] ? -45
         : flags[Flag::pitch_2_3] ? -33
         : flags[Flag::pitch_3_4] ? -21
@@ -27,6 +25,8 @@ int tick(
         : flags[Flag::pitch_5_6] ? 3
         : flags[Flag::pitch_6_7] ? 15
         : -21;
+
+    stk::StkFloat *samples = (stk::StkFloat *) buffer;
 
     for (unsigned int i = 0; i < buffer_size; ++i, ++samples) {
         const std::map<uint64_t, Note> &notes {

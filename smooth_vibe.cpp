@@ -7,11 +7,9 @@ double smooth_vibe(
     static double result = 0;
 
     if (vibe >= result) {
-        double delta = time_div * k;
-        result = fmin(result + delta, vibe);
+        result = fmin(result + k * time_div, vibe);
     } else {
-        double delta = time_div * k;
-        result = fmax(result - delta, vibe);
+        result = fmax(result - k * time_div, vibe);
     }
 
     return result;

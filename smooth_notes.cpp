@@ -25,19 +25,23 @@ std::map<uint64_t, Note> &smooth_notes(
         }
 
         if (new_pitch >= result.second.pitch) {
-            double delta = time_div * k;
-            result.second.pitch = fmin(result.second.pitch + delta, new_pitch);
+            result.second.pitch = fmin(
+                result.second.pitch + k * time_div, new_pitch
+            );
         } else {
-            double delta = time_div * k;
-            result.second.pitch = fmax(result.second.pitch - delta, new_pitch);
+            result.second.pitch = fmax(
+                result.second.pitch - k * time_div, new_pitch
+            );
         }
 
         if (new_volume >= result.second.volume) {
-            double delta = time_div * up;
-            result.second.volume = fmin(result.second.volume + delta, new_volume);
+            result.second.volume = fmin(
+                result.second.volume + up * time_div, new_volume
+            );
         } else {
-            double delta = time_div * down;
-            result.second.volume = fmax(result.second.volume - delta, new_volume);
+            result.second.volume = fmax(
+                result.second.volume - down * time_div, new_volume
+            );
         }
 
         if (result.second.volume < 0.001) { // notice: limit
