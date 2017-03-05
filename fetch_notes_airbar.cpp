@@ -27,9 +27,7 @@ struct __attribute__((__packed__)) AirBarData {
     } fingers[2];
 };
 
-int get_device() {
-    // fprintf(stderr, "Getting device\n");
-
+static int get_device() {
     for (size_t i = 0; i < DEV_SEARCH_MAX; ++i) {
         char buffer[256];
 
@@ -40,7 +38,7 @@ int get_device() {
         if (device != -1) {
             if (ioctl(device, HIDIOCGRAWNAME(256), buffer) != -1) {
                 if (strncmp(buffer, DEV_NAME, strlen(DEV_NAME)) == 0) {
-                    fprintf(stderr, "Device: hidraw%zu\n", i);
+                    fprintf(stderr, "AirBar: hidraw%zu\n", i);
 
                     return device;
                 }
@@ -65,7 +63,7 @@ std::map<uint64_t, Note> &fetch_notes() {
     if (device != -1) {
         AirBarData data;
 
-        while (read(device, &data, sizeof(AirBarData)) == sizeof(AirBarData)) {
+        while (read(device, &data, sizeof(data)) == sizeof(data)) {
             results.clear();
 
             for (size_t i = 0; i < data.finger_count; ++i) {

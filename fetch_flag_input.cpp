@@ -5,7 +5,7 @@
 
 bool flags[256];
 
-int get_input() {
+static int get_device() {
     return open("input", O_RDONLY | O_NONBLOCK);
     // if (fcntl(0, F_SETFL, fcntl(0, F_GETFL) | O_NONBLOCK) != -1) {
     //     return 0;
@@ -15,16 +15,16 @@ int get_input() {
 }
 
 void fetch_flag() {
-    static int input = -1;
+    static int device = -1;
 
-    if (input == -1) {
-        input = get_input();
+    if (device == -1) {
+        device = get_device();
     }
 
-    if (input != -1) {
+    if (device != -1) {
         char c;
 
-        while (read(input, &c, 1) == 1) {
+        while (read(device, &c, sizeof(c)) == sizeof(c)) {
             switch (c) {
                 case '1':
                 case '2':
