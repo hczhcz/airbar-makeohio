@@ -36,7 +36,7 @@ namespace Flag {
         fx_dist,
         fx_nrev,
         fx_jcrev,
-        fx_delay,
+        fx_echo,
         fx_biquad,
         fx_chorus
     };

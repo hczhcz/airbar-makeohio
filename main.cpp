@@ -15,7 +15,7 @@
 // #include "stk/Envelope.h"
 #include "stk/NRev.h"
 #include "stk/JCRev.h"
-#include "stk/Delay.h"
+#include "stk/Echo.h"
 #include "stk/BiQuad.h"
 #include "stk/Chorus.h"
 
@@ -23,7 +23,7 @@ struct Effects {
     // stk::Envelope envelope;
     stk::NRev nrev;
     stk::JCRev jcrev;
-    stk::Delay delay;
+    stk::Echo echo;
     stk::BiQuad biquad;
     stk::Chorus chorus;
 
@@ -34,15 +34,15 @@ struct Effects {
         nrev.setEffectMix(0.45);
         jcrev.setEffectMix(0.45);
 
-        delay.setDelay(500);
-        delay.setMaximumDelay(round(stk::Stk::sampleRate() * 1.5));
-        delay.setGain(0.8);
+        echo.setDelay(200);
+        echo.setMaximumDelay(round(stk::Stk::sampleRate() * 1.5));
+        echo.setEffectMix(0.5);
 
         biquad.setResonance(440.0, 0.98, true);
 
         chorus.setModFrequency(1800.0);
         chorus.setModDepth(0.2);
-        chorus.setEffectMix(0.20);
+        chorus.setEffectMix(0.5);
     }
 };
 
@@ -170,10 +170,10 @@ int tick(
         } else {
             effects.jcrev.tick(*samples);
         }
-        if (flags[Flag::fx_delay]) {
-            *samples = effects.delay.tick(*samples);
+        if (flags[Flag::fx_echo]) {
+            *samples = effects.echo.tick(*samples);
         } else {
-            effects.delay.tick(*samples);
+            effects.echo.tick(*samples);
         }
         if (flags[Flag::fx_biquad]) {
             *samples = effects.biquad.tick(*samples);
