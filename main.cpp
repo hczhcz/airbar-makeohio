@@ -55,11 +55,11 @@ int tick(
 
                 instruments.erase(instrument.first);
             } else {
-                const auto &note = notes.at(instrument.first);
+                instrument.second->setFrequency(
+                    440 * pow(2, notes.at(instrument.first).pitch / 12)
+                );
 
-                instrument.second->setFrequency(440 * pow(2, note.pitch / 12));
-
-                *samples += note.volume
+                *samples += notes.at(instrument.first).volume
                     * instrument.second->tick();
             }
         }

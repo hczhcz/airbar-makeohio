@@ -78,11 +78,11 @@ std::map<uint64_t, Note> &fetch_notes() {
                     double volume = double(data.fingers[i].y - DEV_OFFSET)
                         / (DEV_RANGE - DEV_OFFSET);
 
-                    if (volume >= 1) {
+                    if (volume > 1) {
                         volume = 1;
                     }
 
-                    if (volume >= 0) {
+                    if (volume > 0) {
                         results.insert({id, Note {pitch, volume}});
                     }
                 }
