@@ -73,7 +73,7 @@ struct TickData {
 
 		biquad.setResonance(440.0, 0.98, true);
 		//biquad.setResonance(880.0, 0.98, true);
-		
+
 		chorus.setModFrequency(1800.0);
 		chorus.setModDepth(0.2);
 		chorus.setEffectMix(0.20);

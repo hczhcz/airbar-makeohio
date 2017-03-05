@@ -156,6 +156,10 @@ int tick(
         if (flags[Flag::fx_dist]) {
             *samples *= 3;
         }
+
+        *samples /= sqrt(instruments.size() + 0.0001);
+        *samples = fmin(fmax(*samples, -1), 1);
+
         if (flags[Flag::fx_nrev]) {
             *samples = effects.nrev.tick(*samples);
         } else {
@@ -181,9 +185,6 @@ int tick(
         } else {
             effects.chorus.tick(*samples);
         }
-
-        *samples /= sqrt(instruments.size() + 0.0001);
-        *samples = fmin(fmax(*samples, -1), 1);
     }
 
     return 0;

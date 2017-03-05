@@ -25,7 +25,6 @@ void fetch_flag() {
         char c;
 
         while (read(input, &c, 1) == 1) {
-            fprintf(stderr, "!!![%c]\n", c);
             switch (c) {
                 case '1':
                 case '2':
