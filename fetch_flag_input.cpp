@@ -138,6 +138,24 @@ void fetch_flag() {
                 case 'h': flags[Flag::vibe_delay] &= flags[Flag::vibe_smooth]; break;
                 case 'j': flags[Flag::vibe_smooth] |= flags[Flag::vibe_delay]; break;
             }
+
+            switch (c) {
+                case 'a': fprintf(stderr, "Pitch_round: %d\n", flags[Flag::pitch_round]); break;
+                case 's': fprintf(stderr, "Pitch_fixed: %d\n", flags[Flag::pitch_fixed]); break;
+                case 'd': fprintf(stderr, "Note_smooth: %d\n", flags[Flag::note_smooth]); break;
+                case 'f': fprintf(stderr, "Note_delay: %d\n", flags[Flag::note_delay]); break;
+                case 'g': fprintf(stderr, "Vibe_enable: %d\n", flags[Flag::vibe_enable]); break;
+                case 'h': fprintf(stderr, "Vibe_smooth: %d\n", flags[Flag::vibe_smooth]); break;
+                case 'j': fprintf(stderr, "Vibe_delay: %d\n", flags[Flag::vibe_delay]); break;
+
+                case 'z': fprintf(stderr, "FX_over: %d\n", flags[Flag::fx_over]); break;
+                case 'x': fprintf(stderr, "FX_dist: %d\n", flags[Flag::fx_dist]); break;
+                case 'c': fprintf(stderr, "FX_nrev: %d\n", flags[Flag::fx_nrev]); break;
+                case 'v': fprintf(stderr, "FX_jcrev: %d\n", flags[Flag::fx_jcrev]); break;
+                case 'b': fprintf(stderr, "FX_echo: %d\n", flags[Flag::fx_echo]); break;
+                case 'n': fprintf(stderr, "FX_biquad: %d\n", flags[Flag::fx_biquad]); break;
+                case 'm': fprintf(stderr, "FX_chorus: %d\n", flags[Flag::fx_chorus]); break;
+            }
         }
     }
 }
