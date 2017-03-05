@@ -26,10 +26,10 @@ static int get_device() {
 double fetch_vibe() {
     static int device = -1;
 
-    if (device == -1) {
-        device = get_device();
-        usleep(10 * 1000);
-    }
+    //if (device == -1) {
+    //    device = get_device();
+    //    usleep(10 * 1000);
+    //}
 
     if (device != -1) {
         int16_t action;
