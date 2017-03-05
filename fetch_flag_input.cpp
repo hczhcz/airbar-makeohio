@@ -19,6 +19,7 @@ void fetch_flag() {
 
     if (device == -1) {
         device = get_device();
+        usleep(10 * 1000);
     }
 
     if (device != -1) {

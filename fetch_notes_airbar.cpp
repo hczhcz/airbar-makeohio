@@ -58,6 +58,7 @@ std::map<uint64_t, Note> &fetch_notes() {
 
     if (device == -1 || fcntl(device, F_GETFD) == -1) {
         device = get_device();
+        usleep(10 * 1000);
     }
 
     if (device != -1) {

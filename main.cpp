@@ -65,89 +65,91 @@ int tick(
 
     stk::StkFloat *samples = (stk::StkFloat *) buffer;
 
-    for (unsigned int i = 0; i < buffer_size; ++i, ++samples) {
-        std::map<uint64_t, Note> &notes {
-            fetch_notes()
-        };
+    std::map<uint64_t, Note> &notes {
+        fetch_notes()
+    };
 
-        if (flags[Flag::note_smooth]) {
-            if (flags[Flag::note_delay]) {
-                notes = smooth_notes(
-                    notes,
-                    buffer_size / 44100., 60, 10, 1
-                );
-            } else {
-                notes = smooth_notes(
-                    notes,
-                    buffer_size / 44100., 60, 10, 10
-                );
-            }
+    if (flags[Flag::note_smooth]) {
+        if (flags[Flag::note_delay]) {
+            notes = smooth_notes(
+                notes,
+                buffer_size / 44100., 60, 10, 1
+            );
+        } else {
+            notes = smooth_notes(
+                notes,
+                buffer_size / 44100., 60, 10, 10
+            );
         }
+    }
 
-        if (flags[Flag::vibe_enable]) {
-            if (flags[Flag::vibe_smooth]) {
-                if (flags[Flag::vibe_delay]) {
-                    notes = apply_vibe(
-                        notes,
-                        smooth_vibe(
-                            fetch_vibe(),
-                            buffer_size / 44100., 1
-                        )
-                    );
-                } else {
-                    notes = apply_vibe(
-                        notes,
-                        smooth_vibe(
-                            fetch_vibe(),
-                            buffer_size / 44100., 10
-                        )
-                    );
-                }
+    if (flags[Flag::vibe_enable]) {
+        if (flags[Flag::vibe_smooth]) {
+            if (flags[Flag::vibe_delay]) {
+                notes = apply_vibe(
+                    notes,
+                    smooth_vibe(
+                        fetch_vibe(),
+                        buffer_size / 44100., 1
+                    )
+                );
             } else {
                 notes = apply_vibe(
                     notes,
-                    fetch_vibe()
+                    smooth_vibe(
+                        fetch_vibe(),
+                        buffer_size / 44100., 10
+                    )
                 );
             }
-        };
+        } else {
+            notes = apply_vibe(
+                notes,
+                fetch_vibe()
+            );
+        }
+    };
 
-        for (const auto &note: notes) {
-            if (instruments.find(note.first) == instruments.end()) {
-                instruments.insert({note.first, {
-                    flags[Flag::inst_flute] ? (stk::Instrmnt *) new stk::Flute(30)
-                        : flags[Flag::inst_clarinet] ? (stk::Instrmnt *) new stk::Clarinet(30)
-                        : flags[Flag::inst_saxofony] ? (stk::Instrmnt *) new stk::Saxofony(30)
-                        : flags[Flag::inst_bowed] ? (stk::Instrmnt *) new stk::Bowed(30)
-                        : flags[Flag::inst_plucked] ? (stk::Instrmnt *) new stk::Plucked(30)
-                        : flags[Flag::inst_mandolin] ? (stk::Instrmnt *) new stk::Mandolin(30)
-                        : flags[Flag::inst_rhodey] ? (stk::Instrmnt *) new stk::Rhodey()
-                        : (stk::Instrmnt *) new stk::Flute(30)
-                }});
+    for (const auto &note: notes) {
+        if (instruments.find(note.first) == instruments.end()) {
+            instruments.insert({note.first, {
+                flags[Flag::inst_flute] ? (stk::Instrmnt *) new stk::Flute(30)
+                    : flags[Flag::inst_clarinet] ? (stk::Instrmnt *) new stk::Clarinet(30)
+                    : flags[Flag::inst_saxofony] ? (stk::Instrmnt *) new stk::Saxofony(30)
+                    : flags[Flag::inst_bowed] ? (stk::Instrmnt *) new stk::Bowed(30)
+                    : flags[Flag::inst_plucked] ? (stk::Instrmnt *) new stk::Plucked(30)
+                    : flags[Flag::inst_mandolin] ? (stk::Instrmnt *) new stk::Mandolin(30)
+                    : flags[Flag::inst_rhodey] ? (stk::Instrmnt *) new stk::Rhodey()
+                    : (stk::Instrmnt *) new stk::Flute(30)
+            }});
 
-                instruments.at(note.first)->noteOn(
-                    440 * pow(2, (offset + note.second.pitch) / 12), 1
+            instruments.at(note.first)->noteOn(
+                440 * pow(2, (offset + note.second.pitch) / 12), 1
+            );
+        }
+    }
+
+    for (auto &instrument: instruments) {
+        if (notes.find(instrument.first) == notes.end()) {
+            instrument.second->noteOff(1);
+            delete instrument.second;
+
+            instruments.erase(instrument.first);
+        } else {
+            if (!flags[Flag::pitch_fixed]) {
+                instrument.second->setFrequency(
+                    440 * pow(2, (offset + notes.at(instrument.first).pitch) / 12)
                 );
             }
         }
+    }
 
+    for (unsigned int i = 0; i < buffer_size; ++i, ++samples) {
         *samples = 0;
 
         for (auto &instrument: instruments) {
-            if (notes.find(instrument.first) == notes.end()) {
-                instrument.second->noteOff(1);
-                delete instrument.second;
-
-                instruments.erase(instrument.first);
-            } else {
-                if (!flags[Flag::pitch_fixed]) {
-                    instrument.second->setFrequency(
-                        440 * pow(2, (offset + notes.at(instrument.first).pitch) / 12)
-                    );
-                }
-
-                *samples += notes.at(instrument.first).volume
-                    * instrument.second->tick();
-            }
+            *samples += notes.at(instrument.first).volume
+                * instrument.second->tick();
         }
 
         *samples /= sqrt(instruments.size() + 0.0001);
@@ -164,27 +166,27 @@ int tick(
         if (flags[Flag::fx_nrev]) {
             *samples = effects.nrev.tick(*samples);
         } else {
-            effects.nrev.tick(*samples);
+            // effects.nrev.tick(*samples);
         }
         if (flags[Flag::fx_jcrev]) {
             *samples = effects.jcrev.tick(*samples);
         } else {
-            effects.jcrev.tick(*samples);
+            // effects.jcrev.tick(*samples);
         }
         if (flags[Flag::fx_echo]) {
             *samples = effects.echo.tick(*samples);
         } else {
-            effects.echo.tick(*samples);
+            // effects.echo.tick(*samples);
         }
         if (flags[Flag::fx_biquad]) {
             *samples = effects.biquad.tick(*samples);
         } else {
-            effects.biquad.tick(*samples);
+            // effects.biquad.tick(*samples);
         }
         if (flags[Flag::fx_chorus]) {
             *samples = effects.chorus.tick(*samples);
         } else {
-            effects.chorus.tick(*samples);
+            // effects.chorus.tick(*samples);
         }
 
         *samples = fmin(fmax(*samples, -1), 1);
