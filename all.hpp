@@ -51,11 +51,11 @@ double fetch_vibe();
 
 std::map<uint64_t, Note> &smooth_notes(
     const std::map<uint64_t, Note> &notes,
-    double time_div, double p, double up, double down
+    double time_div, double k, double up, double down
 );
 double smooth_vibe(
     double vibe,
-    double time_div, double up, double down
+    double time_div, double k
 );
 
 std::map<uint64_t, Note> &apply_vibe(
