@@ -12,6 +12,16 @@
 #include "stk/Mandolin.h"
 #include "stk/Rhodey.h"
 
+stk::StkFloat clamp(stk::StkFloat x) {
+    if (x > 1.0) {
+        return 1.0;
+    } else if (x < -1.0) {
+        return -1.0;
+    } else {
+        return x;
+    }
+}
+
 int tick(
     void *buffer, void *, unsigned int buffer_size, double,
     RtAudioStreamStatus, void *
@@ -25,11 +35,11 @@ int tick(
             apply_vibe(
                 smooth_notes(
                     fetch_notes(),
-                    1000 / 44100. * buffer_size, 5, 10, 5 // TODO: use fp timestamp?
+                    1000 / 44100. * buffer_size, 100, 200, 100 // TODO: use fp timestamp?
                 ),
                 smooth_vibe(
                     fetch_vibe(),
-                    1000 / 44100. * buffer_size, 5, 5
+                    1000 / 44100. * buffer_size, 100, 100
                 )
             )
         };
@@ -37,7 +47,7 @@ int tick(
         for (const auto &note: notes) {
             if (instruments.find(note.first) == instruments.end()) {
                 instruments.insert({note.first, {
-                    new stk::Flute(55)
+                    new stk::Saxofony(200)
                 }});
 
                 instruments.at(note.first)->noteOn(
@@ -63,6 +73,10 @@ int tick(
                     * instrument.second->tick();
             }
         }
+
+        *samples /= sqrt(instruments.size() + 0.00001); // FIXME: 
+
+        *samples = clamp(*samples);
     }
 
     return 0;
