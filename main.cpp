@@ -20,6 +20,14 @@ int tick(
 
     stk::StkFloat *samples = (stk::StkFloat *) buffer;
 
+    double offset = flags[Flag::pitch_1_2] ? -45
+        : flags[Flag::pitch_2_3] ? -33
+        : flags[Flag::pitch_3_4] ? -21
+        : flags[Flag::pitch_4_5] ? -9
+        : flags[Flag::pitch_5_6] ? 3
+        : flags[Flag::pitch_6_7] ? 15
+        : -21;
+
     for (unsigned int i = 0; i < buffer_size; ++i, ++samples) {
         const std::map<uint64_t, Note> &notes {
             apply_vibe(
@@ -37,11 +45,18 @@ int tick(
         for (const auto &note: notes) {
             if (instruments.find(note.first) == instruments.end()) {
                 instruments.insert({note.first, {
-                    new stk::Saxofony(200)
+                    flags[Flag::inst_flute] ? new stk::Flute(27.5)
+                        : flags[Flag::inst_clarinet] ? new stk::Clarinet(27.5)
+                        : flags[Flag::inst_saxofony] ? new stk::Saxofony(27.5)
+                        : flags[Flag::inst_bowed] ? new stk::Bowed(27.5)
+                        : flags[Flag::inst_plucked] ? new stk::Plucked(27.5)
+                        : flags[Flag::inst_mandolin] ? new stk::Mandolin(27.5)
+                        : flags[Flag::inst_rhodey] ? new stk::Rhodey(27.5)
+                        : new stk::Flute(27.5)
                 }});
 
                 instruments.at(note.first)->noteOn(
-                    440 * pow(2, note.second.pitch / 12), 1
+                    440 * pow(2, (offset + note.second.pitch) / 12), 1
                 );
             }
         }
@@ -56,7 +71,7 @@ int tick(
                 instruments.erase(instrument.first);
             } else {
                 instrument.second->setFrequency(
-                    440 * pow(2, notes.at(instrument.first).pitch / 12)
+                    440 * pow(2, (offset + notes.at(instrument.first).pitch) / 12)
                 );
 
                 *samples += notes.at(instrument.first).volume
