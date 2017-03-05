@@ -66,13 +66,16 @@ void fetch_flag() {
 
                     break;
 
-                case 'm':
-                    flags[Flag::fx_over] = false;
-                    flags[Flag::fx_dist] = false;
-                    flags[Flag::fx_reverb] = false;
-                    flags[Flag::fx_echo] = false;
+                // case 'm': // TODO
+                //     flags[Flag::fx_over] = false;
+                //     flags[Flag::fx_dist] = false;
+                //     flags[Flag::fx_nrev] = false;
+                //     flags[Flag::fx_jcrev] = false;
+                //     flags[Flag::fx_delay] = false;
+                //     flags[Flag::fx_biquad] = false;
+                //     flags[Flag::fx_chorus] = false;
 
-                    break;
+                //     break;
             }
 
             switch (c) {
@@ -123,8 +126,11 @@ void fetch_flag() {
 
                 case 'z': flags[Flag::fx_over] = !flags[Flag::fx_over]; break;
                 case 'x': flags[Flag::fx_dist] = !flags[Flag::fx_dist]; break;
-                case 'c': flags[Flag::fx_reverb] = !flags[Flag::fx_reverb]; break;
-                case 'v': flags[Flag::fx_echo] = !flags[Flag::fx_echo]; break;
+                case 'c': flags[Flag::fx_nrev] = !flags[Flag::fx_nrev]; break;
+                case 'v': flags[Flag::fx_jcrev] = !flags[Flag::fx_jcrev]; break;
+                case 'b': flags[Flag::fx_delay] = !flags[Flag::fx_delay]; break;
+                case 'n': flags[Flag::fx_biquad] = !flags[Flag::fx_biquad]; break;
+                case 'm': flags[Flag::fx_chorus] = !flags[Flag::fx_chorus]; break;
             }
 
             switch (c) {

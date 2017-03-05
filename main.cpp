@@ -11,12 +11,47 @@
 #include "stk/Plucked.h"
 #include "stk/Mandolin.h"
 #include "stk/Rhodey.h"
+// effects
+// #include "stk/Envelope.h"
+#include "stk/NRev.h"
+#include "stk/JCRev.h"
+#include "stk/Delay.h"
+#include "stk/BiQuad.h"
+#include "stk/Chorus.h"
+
+struct Effects {
+    // stk::Envelope envelope;
+    stk::NRev nrev;
+    stk::JCRev jcrev;
+    stk::Delay delay;
+    stk::BiQuad biquad;
+    stk::Chorus chorus;
+
+    Effects() {
+        // envelope.setTarget(1.0);
+        // envelope.setRate(0.001);
+
+        nrev.setEffectMix(0.45);
+        jcrev.setEffectMix(0.45);
+
+        delay.setDelay(500);
+        delay.setMaximumDelay(round(stk::Stk::sampleRate() * 1.5));
+        delay.setGain(0.8);
+
+        biquad.setResonance(440.0, 0.98, true);
+
+        chorus.setModFrequency(1800.0);
+        chorus.setModDepth(0.2);
+        chorus.setEffectMix(0.20);
+    }
+};
 
 int tick(
     void *buffer, void *, unsigned int buffer_size, double,
     RtAudioStreamStatus, void *
 ) {
     static std::map<uint64_t, stk::Instrmnt *> instruments;
+    static Effects effects;
 
     fetch_flag();
 
@@ -113,6 +148,38 @@ int tick(
                 *samples += notes.at(instrument.first).volume
                     * instrument.second->tick();
             }
+        }
+
+        if (flags[Flag::fx_over]) {
+            *samples *= pow(std::abs(*samples), -0.6);
+        }
+        if (flags[Flag::fx_dist]) {
+            *samples *= 3;
+        }
+        if (flags[Flag::fx_nrev]) {
+            *samples = effects.nrev.tick(*samples);
+        } else {
+            effects.nrev.tick(*samples);
+        }
+        if (flags[Flag::fx_jcrev]) {
+            *samples = effects.jcrev.tick(*samples);
+        } else {
+            effects.jcrev.tick(*samples);
+        }
+        if (flags[Flag::fx_delay]) {
+            *samples = effects.delay.tick(*samples);
+        } else {
+            effects.delay.tick(*samples);
+        }
+        if (flags[Flag::fx_biquad]) {
+            *samples = effects.biquad.tick(*samples);
+        } else {
+            effects.biquad.tick(*samples);
+        }
+        if (flags[Flag::fx_chorus]) {
+            *samples = effects.chorus.tick(*samples);
+        } else {
+            effects.chorus.tick(*samples);
         }
 
         *samples /= sqrt(instruments.size() + 0.0001);

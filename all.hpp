@@ -34,8 +34,11 @@ namespace Flag {
         vibe_delay,
         fx_over,
         fx_dist,
-        fx_reverb,
-        fx_echo
+        fx_nrev,
+        fx_jcrev,
+        fx_delay,
+        fx_biquad,
+        fx_chorus
     };
 };
 
