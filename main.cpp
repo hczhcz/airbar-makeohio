@@ -73,12 +73,12 @@ int tick(
         if (flags[Flag::note_delay]) {
             notes = smooth_notes(
                 notes,
-                buffer_size / 44100., 60, 10, 1
+                10.0 * buffer_size / 44100., 60, 10, 1
             );
         } else {
             notes = smooth_notes(
                 notes,
-                buffer_size / 44100., 60, 10, 10
+                10.0 * buffer_size / 44100., 60, 10, 10
             );
         }
     }
