@@ -37,8 +37,12 @@ int tick(
         for (const auto &note: notes) {
             if (instruments.find(note.first) == instruments.end()) {
                 instruments.insert({note.first, {
-                    new stk::Flute(0)
+                    new stk::Flute(55)
                 }});
+
+                instruments.at(note.first)->noteOn(
+                    440 * pow(2, note.second.pitch / 12), 1
+                );
             }
         }
 
