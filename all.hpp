@@ -25,11 +25,11 @@ bool fetch_flag(Flag c);
 
 std::map<uint64_t, Note> &smooth_notes(
     const std::map<uint64_t, Note> &notes,
-    uint64_t time_div, double p, double up, double down
+    double time_div, double p, double up, double down
 );
 double smooth_vibe(
     double vibe,
-    uint64_t time_div, double up, double down
+    double time_div, double up, double down
 );
 
 std::map<uint64_t, Note> &apply_vibe(

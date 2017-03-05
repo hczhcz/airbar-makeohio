@@ -2,7 +2,7 @@
 
 std::map<uint64_t, Note> &smooth_notes(
     const std::map<uint64_t, Note> &notes,
-    uint64_t time_div, double p, double up, double down
+    double time_div, double p, double up, double down
 ) {
     static std::map<uint64_t, Note> results;
 
@@ -25,18 +25,18 @@ std::map<uint64_t, Note> &smooth_notes(
         }
 
         if (new_pitch >= result.second.pitch) {
-            double delta = 0.001 * time_div * p;
+            double delta = time_div * p;
             result.second.pitch = fmin(result.second.pitch + delta, new_pitch);
         } else {
-            double delta = 0.001 * time_div * p;
+            double delta = time_div * p;
             result.second.pitch = fmax(result.second.pitch - delta, new_pitch);
         }
 
         if (new_volume >= result.second.volume) {
-            double delta = 0.001 * time_div * up;
+            double delta = time_div * up;
             result.second.volume = fmin(result.second.volume + delta, new_volume);
         } else {
-            double delta = 0.001 * time_div * down;
+            double delta = time_div * down;
             result.second.volume = fmax(result.second.volume - delta, new_volume);
         }
 

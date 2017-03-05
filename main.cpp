@@ -12,16 +12,6 @@
 #include "stk/Mandolin.h"
 #include "stk/Rhodey.h"
 
-stk::StkFloat clamp(stk::StkFloat x) {
-    if (x > 1.0) {
-        return 1.0;
-    } else if (x < -1.0) {
-        return -1.0;
-    } else {
-        return x;
-    }
-}
-
 int tick(
     void *buffer, void *, unsigned int buffer_size, double,
     RtAudioStreamStatus, void *
@@ -35,11 +25,11 @@ int tick(
             apply_vibe(
                 smooth_notes(
                     fetch_notes(),
-                    1000 / 44100. * buffer_size, 100, 200, 100 // TODO: use fp timestamp?
+                    buffer_size / 44100., 100, 200, 100 // TODO: use fp timestamp?
                 ),
                 smooth_vibe(
                     fetch_vibe(),
-                    1000 / 44100. * buffer_size, 100, 100
+                    buffer_size / 44100., 100, 100
                 )
             )
         };
@@ -74,16 +64,15 @@ int tick(
             }
         }
 
-        *samples /= sqrt(instruments.size() + 0.00001); // FIXME: 
-
-        *samples = clamp(*samples);
+        *samples /= sqrt(instruments.size() + 0.0001);
+        *samples = fmin(fmax(*samples, -1), 1);
     }
 
     return 0;
 }
 
 int main() {
-    stk::Stk::setSampleRate(44100.);
+    stk::Stk::setSampleRate(44100);
 
     RtAudio out;
     RtAudio::StreamParameters parameters;
