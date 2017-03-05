@@ -75,6 +75,11 @@ std::map<uint64_t, Note> &fetch_notes() {
                     double pitch = double(data.fingers[i].x)
                         * OUTPUT_PITCH_RANGE
                         / DEV_WIDTH;
+
+                    if (flags[Flag::pitch_round]) {
+                        pitch = round(pitch);
+                    }
+
                     double volume = double(data.fingers[i].y - DEV_OFFSET)
                         / (DEV_RANGE - DEV_OFFSET);
 

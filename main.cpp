@@ -29,17 +29,49 @@ int tick(
     stk::StkFloat *samples = (stk::StkFloat *) buffer;
 
     for (unsigned int i = 0; i < buffer_size; ++i, ++samples) {
-        const std::map<uint64_t, Note> &notes {
-            apply_vibe(
-                smooth_notes(
-                    fetch_notes(),
-                    buffer_size / 44100., 100, 200, 100 // TODO: use fp timestamp?
-                ),
-                smooth_vibe(
-                    fetch_vibe(),
-                    buffer_size / 44100., 100, 100
-                )
-            )
+        std::map<uint64_t, Note> &notes {
+            fetch_notes()
+        };
+
+        if (flags[Flag::note_smooth]) {
+            if (flags[Flag::note_delay]) {
+                notes = smooth_notes(
+                    notes,
+                    buffer_size / 44100., 60, 10, 1
+                );
+            } else {
+                notes = smooth_notes(
+                    notes,
+                    buffer_size / 44100., 60, 10, 10
+                );
+            }
+        }
+
+        if (flags[Flag::vibe_enable]) {
+            if (flags[Flag::vibe_smooth]) {
+                if (flags[Flag::vibe_delay]) {
+                    notes = apply_vibe(
+                        notes,
+                        smooth_vibe(
+                            fetch_vibe(),
+                            buffer_size / 44100., 1
+                        )
+                    );
+                } else {
+                    notes = apply_vibe(
+                        notes,
+                        smooth_vibe(
+                            fetch_vibe(),
+                            buffer_size / 44100., 10
+                        )
+                    );
+                }
+            } else {
+                notes = apply_vibe(
+                    notes,
+                    fetch_vibe()
+                );
+            }
         };
 
         for (const auto &note: notes) {
@@ -70,9 +102,11 @@ int tick(
 
                 instruments.erase(instrument.first);
             } else {
-                instrument.second->setFrequency(
-                    440 * pow(2, (offset + notes.at(instrument.first).pitch) / 12)
-                );
+                if (!flags[Flag::pitch_fixed]) {
+                    instrument.second->setFrequency(
+                        440 * pow(2, (offset + notes.at(instrument.first).pitch) / 12)
+                    );
+                }
 
                 *samples += notes.at(instrument.first).volume
                     * instrument.second->tick();
