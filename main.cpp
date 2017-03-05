@@ -31,10 +31,10 @@ struct Effects {
         // envelope.setTarget(1.0);
         // envelope.setRate(0.001);
 
-        nrev.setEffectMix(0.45);
-        jcrev.setEffectMix(0.45);
+        nrev.setEffectMix(0.2);
+        jcrev.setEffectMix(0.2);
 
-        echo.setDelay(200);
+        echo.setDelay(50);
         echo.setMaximumDelay(round(stk::Stk::sampleRate() * 1.5));
         echo.setEffectMix(0.5);
 
@@ -150,6 +150,8 @@ int tick(
             }
         }
 
+        *samples /= sqrt(instruments.size() + 0.0001);
+
         if (flags[Flag::fx_over]) {
             *samples *= pow(std::abs(*samples), -0.6);
         }
@@ -157,7 +159,6 @@ int tick(
             *samples *= 3;
         }
 
-        *samples /= sqrt(instruments.size() + 0.0001);
         *samples = fmin(fmax(*samples, -1), 1);
 
         if (flags[Flag::fx_nrev]) {
@@ -185,6 +186,8 @@ int tick(
         } else {
             effects.chorus.tick(*samples);
         }
+
+        *samples = fmin(fmax(*samples, -1), 1);
     }
 
     return 0;
