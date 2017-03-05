@@ -56,6 +56,8 @@ std::map<uint64_t, Note> &fetch_notes() {
 
     static int device = -1;
 
+    results.clear();
+
     if (device == -1 || fcntl(device, F_GETFD) == -1) {
         device = get_device();
         usleep(10 * 1000);
@@ -92,8 +94,6 @@ std::map<uint64_t, Note> &fetch_notes() {
                 }
             }
         }
-    } else {
-        results.clear();
     }
 
     return results;
